@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todos</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;800&display=swap"
+      rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+      rel="stylesheet" />
+    <style>
+      body {
+        background-color: white;
+        font-family: "Inter", sans-serif;
+      }
+      .gradient-custom {
+        background: linear-gradient(45deg, #2980b9, #6dd5fa);
+      }
+
+      .nav-link.active-tab {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="vh-100 gradient-custom">
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col col-xl-10">
+            <div class="card shadow-lg">
+              <div class="card-body p-5">
+                <h6 class="mb-3"><%= user.username %>'s Todo Lists</h6>
+                <form
+                  method="post"
+                  action="/add"
+                  class="d-flex justify-content-center align-items-center mb-4">
+                  <div class="form-outline flex-fill">
+                    <input
+                      name="todoName"
+                      type="text"
+                      id="form2"
+                      class="form-control"
+                      placeholder="New task..." />
+                  </div>
+                  <button
+                    type="submit"
+                    style="color: white"
+                    class="btn btn-info ms-2">
+                    Add
+                  </button>
+                </form>
+
+                <!-- Tabs navs -->
+                <ul class="nav nav-tabs mb-4 pb-2" id="ex1" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <a
+                      class="nav-link active"
+                      id="ex1-tab-1"
+                      data-bs-toggle="tab"
+                      href="#ex1-tabs-1"
+                      role="tab"
+                      aria-controls="ex1-tabs-1"
+                      aria-selected="true"
+                      >All</a
+                    >
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a
+                      class="nav-link"
+                      id="ex1-tab-2"
+                      data-bs-toggle="tab"
+                      href="#ex1-tabs-2"
+                      role="tab"
+                      aria-controls="ex1-tabs-2"
+                      aria-selected="false"
+                      >Active</a
+                    >
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a
+                      class="nav-link"
+                      id="ex1-tab-3"
+                      data-bs-toggle="tab"
+                      href="#ex1-tabs-3"
+                      role="tab"
+                      aria-controls="ex1-tabs-3"
+                      aria-selected="false"
+                      >Completed</a
+                    >
+                  </li>
+                </ul>
+
+                <!-- Tabs navs -->
+
+                <!-- Tabs content -->
+                <div class="tab-content" id="ex1-content">
+                  <div
+                    class="tab-pane fade show active"
+                    id="ex1-tabs-1"
+                    role="tabpanel"
+                    aria-labelledby="ex1-tab-1">
+                    <% if (userTodos.length === 0) { %>
+                    <div class="text-center mt-5">
+                      <p><b>No Todos Available!</b></p>
+                    </div>
+                    <% } else { %>
+                    <ul class="list-group mb-0">
+                      <% userTodos.forEach(function(todo) { %> <% if
+                      (todo.completed) { %>
+                      <li
+                        class="list-group-item d-flex align-items-center border-0 mb-2 rounded"
+                        style="background-color: #f4f6f7">
+                        <input
+                          id="list<%= todo.id %>"
+                          class="form-check-input me-2"
+                          type="checkbox"
+                          aria-label="..."
+                          checked />
+                        <span
+                          data-bs-toggle="modal"
+                          data-bs-target="#deleteModal<%= todo.id %>"
+                          style="
+                            cursor: pointer;
+                            margin-left: 10px;
+                            margin-top: 3px;
+                            width: 100%;
+                          "
+                          id="todoText<%= todo.id %>"
+                          ><s><%= todo.name %></s></span
+                        >
+                      </li>
+                      <!-- Button trigger modal -->
+
+                      <!-- Modal -->
+                      <div
+                        class="modal fade"
+                        id="deleteModal<%= todo.id %>"
+                        tabindex="-1"
+                        aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1
+                                class="modal-title fs-5"
+                                id="exampleModalLabel">
+                                Delete <%= todo.name %>
+                              </h1>
+                              <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <p class="mt-2">Do you want to delete this completed todo?</p>
+                              
+                            </div>
+                            <div class="modal-footer">
+                              <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                                Close
+                              </button>
+                              <form action="/delete" method="post">
+                                <div
+                                  class="my-1 px-2"
+                                  style="
+                                    display: flex;
+                                    justify-content: flex-end;
+                                  ">
+                                  <input
+                                    type="hidden"
+                                    name="deletedItemId"
+                                    value="<%= todo.id %>" />
+                                  <button class="btn btn-danger">
+                                    Delete Todo
+                                  </button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <% } else { %>
+                      <li
+                        class="list-group-item d-flex align-items-center border-0 mb-2 rounded"
+                        style="background-color: #f4f6f7">
+                        <form action="/completed" method="post">
+                          <input
+                            name="updateTodoId"
+                            id="list<%= todo.id %>"
+                            class="form-check-input me-2"
+                            type="checkbox"
+                            value="<%= todo.id %>"
+                            aria-label="..."
+                            onchange="this.form.submit()"
+                            onclick="strikeout(<%= todo.id %>)" />
+                        </form>
+                        <span
+                          data-bs-toggle="modal"
+                          data-bs-target="#todoModal<%= todo.id %>"
+                          style="
+                            cursor: pointer;
+                            margin-left: 10px;
+                            margin-top: 3px;
+                            width: 100%;
+                          "
+                          id="todoText<%= todo.id %>"
+                          ><%= todo.name %></span
+                        >
+                      </li>
+
+                      <% } %>
+
+                      <div
+                        class="modal fade"
+                        id="todoModal<%= todo.id %>"
+                        tabindex="-1"
+                        aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1
+                                class="modal-title fs-5"
+                                id="exampleModalLabel">
+                                Details
+                              </h1>
+                              <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                            </div>
+                            <form class="px-3" action="/update" method="post">
+                              <div class="modal-body">
+                                <div class="row d-flex align-items-start">
+                                  <div class="col-sm mb-2">
+                                    <h3
+                                      class="fw-bold mb-3 fs-4 text-body-emphasis">
+                                      <%= todo.name %>
+                                    </h3>
+                                    <p>
+                                      Date Created: <%= todo.date_created %>
+                                    </p>
+                                    <% if (todo.date_updated) { %>
+                                    <p>
+                                      Date Updated: <%= todo.date_updated %>
+                                    </p>
+                                    <% } %>
+                                  </div>
+                                  <div class="form-group">
+                                    <input
+                                      type="hidden"
+                                      name="updatedItemId"
+                                      value="<%= todo.id %>" />
+                                    <label class="mb-2" for="exampleInputEmail1"
+                                      >Update Todo Name</label
+                                    >
+                                    <input
+                                      name="todoName"
+                                      type="text"
+                                      class="form-control"
+                                      id="exampleInputEmail1"
+                                      aria-describedby="emailHelp"
+                                      placeholder="Enter a name" />
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="px-3"
+                                style="
+                                  display: flex;
+                                  justify-content: flex-end;
+                                ">
+                                <button
+                                  type="button"
+                                  class="btn btn-secondary"
+                                  data-bs-dismiss="modal">
+                                  Close
+                                </button>
+                                <button
+                                  style="margin-left: 10px"
+                                  type="submit"
+                                  class="btn btn-primary">
+                                  Save changes
+                                </button>
+                              </div>
+                            </form>
+                            <form action="/delete" method="post">
+                              <div
+                                class="modal-footer my-3 px-4"
+                                style="
+                                  display: flex;
+                                  justify-content: flex-end;
+                                ">
+                                <input
+                                  type="hidden"
+                                  name="deletedItemId"
+                                  value="<%= todo.id %>" />
+                                <button class="btn btn-danger">
+                                  Delete Todo
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                      <% }); %> <% } %>
+                    </ul>
+                  </div>
+
+                  <!-- active-tab -->
+                  <div
+                    class="tab-pane fade"
+                    id="ex1-tabs-2"
+                    role="tabpanel"
+                    aria-labelledby="ex1-tab-2">
+                    <% if (userActiveTodos.length === 0) { %>
+                    <div class="text-center mt-5">
+                      <p><b>No Active Todos!</b></p>
+                    </div>
+                    <% } else { %>
+                    <ul class="list-group mb-0">
+                      <% userActiveTodos.forEach(function(todo) { %>
+                      <li
+                        class="list-group-item d-flex align-items-center border-0 mb-2 rounded"
+                        style="background-color: #f4f6f7">
+                        <form action="/completed" method="post">
+                          <input
+                            name="updateTodoId"
+                            id="list<%= todo.id %>"
+                            class="form-check-input me-2"
+                            type="checkbox"
+                            value="<%= todo.id %>"
+                            aria-label="..."
+                            onchange="this.form.submit()"
+                            onclick="strikeout(<%= todo.id %>)" />
+                        </form>
+                        <span
+                          data-bs-toggle="modal"
+                          data-bs-target="#todoModalAcitve<%= todo.id %>"
+                          style="
+                            cursor: pointer;
+                            margin-left: 10px;
+                            margin-top: 3px;
+                            width: 100%;
+                          "
+                          id="todoText<%= todo.id %>"
+                          ><%= todo.name %></span
+                        >
+                      </li>
+
+                      <div
+                        class="modal fade"
+                        id="todoModalAcitve<%= todo.id %>"
+                        tabindex="-1"
+                        aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1
+                                class="modal-title fs-5"
+                                id="exampleModalLabel">
+                                Details
+                              </h1>
+                              <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                            </div>
+                            <form class="px-3" action="/update" method="post">
+                              <div class="modal-body">
+                                <div class="row d-flex align-items-start">
+                                  <div class="col-sm mb-2">
+                                    <h3
+                                      class="fw-bold mb-3 fs-4 text-body-emphasis">
+                                      <%= todo.name %>
+                                    </h3>
+                                    <p>
+                                      Date Created: <%= todo.date_created %>
+                                    </p>
+                                    <% if (todo.date_updated) { %>
+                                    <p>
+                                      Date Updated: <%= todo.date_updated %>
+                                    </p>
+                                    <% } %>
+                                  </div>
+                                  <div class="form-group">
+                                    <input
+                                      type="hidden"
+                                      name="updatedItemId"
+                                      value="<%= todo.id %>" />
+                                    <label class="mb-2" for="exampleInputEmail1"
+                                      >Update Todo Name</label
+                                    >
+                                    <input
+                                      name="todoName"
+                                      type="text"
+                                      class="form-control"
+                                      id="exampleInputEmail1"
+                                      aria-describedby="emailHelp"
+                                      placeholder="Enter a name" />
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="px-3"
+                                style="
+                                  display: flex;
+                                  justify-content: flex-end;
+                                ">
+                                <button
+                                  type="button"
+                                  class="btn btn-secondary"
+                                  data-bs-dismiss="modal">
+                                  Close
+                                </button>
+                                <button
+                                  style="margin-left: 10px"
+                                  type="submit"
+                                  class="btn btn-primary">
+                                  Save changes
+                                </button>
+                              </div>
+                            </form>
+                            <form action="/delete" method="post">
+                              <div
+                                class="modal-footer my-3 px-4"
+                                style="
+                                  display: flex;
+                                  justify-content: flex-end;
+                                ">
+                                <input
+                                  type="hidden"
+                                  name="deletedItemId"
+                                  value="<%= todo.id %>" />
+                                <button class="btn btn-danger">
+                                  Delete Todo
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+
+                      <% }); %> <% } %>
+                    </ul>
+                  </div>
+
+                  <!-- Completed tab -->
+                  <div
+                    class="tab-pane fade"
+                    id="ex1-tabs-3"
+                    role="tabpanel"
+                    aria-labelledby="ex1-tab-3">
+                    <% if (userCompletedTodos.length === 0) { %>
+                    <div class="text-center mt-5">
+                      <p><b>No completed Todos!</b></p>
+                    </div>
+                    <% } else { %>
+                    <ul class="list-group mb-0">
+                      <% userCompletedTodos.forEach(function(todo) { %>
+                      <li
+                        class="list-group-item d-flex align-items-center border-0 mb-2 rounded"
+                        style="background-color: #f4f6f7">
+                        <input
+                          id="list<%= todo.id %>"
+                          class="form-check-input me-2"
+                          type="checkbox"
+                          value=""
+                          aria-label="..."
+                          checked />
+                        <span
+                          data-bs-toggle="modal"
+                          data-bs-target="#deleteModal2<%= todo.id %>"
+                          style="
+                            cursor: pointer;
+                            margin-left: 10px;
+                            margin-top: 3px;
+                            width: 100%;
+                          "
+                          id="todoText<%= todo.id %>"
+                          ><s><%= todo.name %></s></span
+                        >
+                      </li>
+
+                      <div
+                        class="modal fade"
+                        id="deleteModal2<%= todo.id %>"
+                        tabindex="-1"
+                        aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1
+                                class="modal-title fs-5"
+                                id="exampleModalLabel">
+                                Delete <%= todo.name %>
+                              </h1>
+                              <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <p class="mt-2">Do you want to delete this completed todo?</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                                Close
+                              </button>
+                              <form action="/delete" method="post">
+                                <div
+                                  class="my-1 px-2"
+                                  style="
+                                    display: flex;
+                                    justify-content: flex-end;
+                                  ">
+                                  <input
+                                    type="hidden"
+                                    name="deletedItemId"
+                                    value="<%= todo.id %>" />
+                                  <button class="btn btn-danger">
+                                    Delete Todo
+                                  </button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <% }); %> <% } %>
+                    </ul>
+                  </div>
+                </div>
+                <!-- Tabs content -->
+              </div>
+            </div>
+            <div class="my-3" style="display: flex; justify-content: flex-end">
+              <a href="/logout" class="btn btn-danger">Logout</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      $(document).ready(function () {
+        $(".nav-link").click(function () {
+          $(".nav-link").removeClass("active-tab");
+          $(this).addClass("active-tab");
+        });
+      });
+      function strikeout(todoId) {
+        const checkbox = document.getElementById(`list${todoId}`);
+        console.log(checkbox.length);
+        const todoText = document.getElementById(`todoText${todoId}`);
+
+        if (checkbox.checked) {
+          todoText.style.textDecoration = "line-through";
+        } else {
+          todoText.style.textDecoration = "none";
+        }
+      }
+    </script>
+  </body>
+</html>
