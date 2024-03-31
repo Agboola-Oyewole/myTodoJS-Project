@@ -299,3 +299,4 @@ passport.deserializeUser((user, cb) => {
   cb(null, user);
 });
 
+module.exports = app;
