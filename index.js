@@ -267,7 +267,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/google/secrets",
+      callbackURL: "https://mytodojs-project.onrender.com/auth/google/secrets",
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
     },
     async (accessToken, refreshToken, profile, cb) => {
@@ -299,6 +299,3 @@ passport.deserializeUser((user, cb) => {
   cb(null, user);
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
